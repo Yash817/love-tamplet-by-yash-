@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Magical Story ✨</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- GSAP (Animation Engine) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    <!-- Lenis (Smooth Scroll) -->
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'stardust': '#f1f5f9', 
+                        'magic-gold': '#ffd700',
+                        'royal-purple': '#2e1065',
+                        'deep-night': '#05010a',
+                        'neon-pink': '#ff69b4',
+                    },
+                    fontFamily: {
+                        'signature': ['"Great Vibes"', 'cursive'],
+                        'cinema': ['"Cinzel"', 'serif'],
+                        'elegant': ['"Cormorant Garamond"', 'serif'],
+                    },
+                    backgroundImage: {
+                        'magic-gradient': 'radial-gradient(circle at center, #1e0b4b 0%, #05010a 100%)',
+                        'gold-shimmer': 'linear-gradient(45deg, #ffd700, #fff, #ffd700)',
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 4s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'orb-float': 'orbFloat 5s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px 0 rgba(255, 215, 0, 0.2)' },
+                            '50%': { boxShadow: '0 0 30px 10px rgba(255, 215, 0, 0.4)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        orbFloat: {
+                            '0%, 100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) scale(1.05)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-100% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- CORE STYLES --- */
+        /* Removed native smooth scroll to allow Lenis to take over */
+        html {
+            /* scroll-behavior: smooth; - Handled by Lenis */
+        }
+        body {
+            background-color: #05010a;
+            color: #fff;
+            overflow-x: hidden;
+            cursor: none; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Mobile Optimization for Cursor */
+        @media (max-width: 768px) {
+            body { cursor: auto; }
+            .cursor-ring, .cursor-dot { display: none !important; }
+        }
+
+        .min-h-dvh { min-height: 100dvh; }
+
+        /* Film Grain Overlay - Optimized */
+        .film-grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9990;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor-ring {
+            position: fixed; width: 40px; height: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.6);
+            border-radius: 50%; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, border-color 0.2s;
+            mix-blend-mode: exclusion;
+            will-change: transform, width, height;
+        }
+        .cursor-dot {
+            position: fixed; width: 6px; height: 6px;
+            background-color: #ffd700; border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px #ffd700;
+            will-change: transform;
+        }
+
+        /* 3D Tilt Card Effect */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+            will-change: transform;
+        }
+        .tilt-card-inner {
+            transform: translateZ(40px);
+        }
+
+        /* Magical Glowing Orbs - Refined */
+        .magic-orb {
+            width: 80px; height: 80px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,215,0,0.9), rgba(46,16,101,0.8));
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 40px rgba(255,215,0,0.2), inset 0 0 20px rgba(255,255,255,0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        @media (min-width: 768px) {
+            .magic-orb { width: 100px; height: 100px; }
+        }
+        .magic-orb::after {
+            content: ''; position: absolute; inset: -5px; border-radius: 50%;
+            background: transparent; border: 1px dashed rgba(255,215,0,0.3);
+            animation: spin 10s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        .magic-orb:hover { transform: scale(1.15); box-shadow: 0 0 60px rgba(255,215,0,0.5); }
+        .orb-content {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            opacity: 0; transition: opacity 0.4s; pointer-events: none; width: 220px; text-align: center;
+        }
+        .magic-orb.active { 
+            transform: scale(3.5); 
+            background: radial-gradient(circle at center, #1a0b2e, #000); 
+            z-index: 50; 
+            border-color: rgba(255,215,0,0.1);
+            box-shadow: 0 0 100px rgba(46,16,101,0.8);
+        }
+        .magic-orb.active::after { display: none; }
+        .magic-orb.active .orb-content { opacity: 1; pointer-events: auto; }
+
+        /* Ring Box - Responsive */
+        .box-container {
+            width: 120px; height: 120px; position: relative;
+            transform-style: preserve-3d; cursor: pointer; transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @media (min-width: 768px) {
+            .box-container { width: 140px; height: 140px; }
+        }
+        .box-container:hover { transform: scale(1.05) rotateX(15deg); }
+        .box-lid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 40px;
+            background: linear-gradient(135deg, #5b21b6, #2e1065);
+            transform-origin: top; transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10; border-bottom: 3px solid #ffd700;
+            border-radius: 12px 12px 0 0;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.3);
+        }
+        @media (min-width: 768px) { .box-lid { height: 50px; } }
+
+        .box-body {
+            position: absolute; top: 40px; left: 0; width: 100%; height: 80px;
+            background: linear-gradient(135deg, #2e1065, #0f0518);
+            border-radius: 0 0 12px 12px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        @media (min-width: 768px) { .box-body { top: 50px; height: 90px; } }
+
+        .box-container.open .box-lid { transform: rotateX(-115deg); }
+        
+        .ring-wrapper {
+            position: relative; transform: translateY(20px) scale(0.8);
+            opacity: 0; transition: all 1s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .box-container.open .ring-wrapper { transform: translateY(-15px) scale(1.1); opacity: 1; }
+        
+        .ring-band {
+            width: 40px; height: 40px; border: 3px solid #ffd700;
+            border-radius: 50%; box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+        }
+        @media (min-width: 768px) { .ring-band { width: 45px; height: 45px; border-width: 4px; } }
+
+        .diamond {
+            position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%) rotate(45deg); width: 12px; height: 12px;
+            background: white; box-shadow: 0 0 30px 10px rgba(255, 255, 255, 0.9);
+            animation: sparkle 2s infinite linear;
+        }
+        @media (min-width: 768px) { .diamond { top: -18px; width: 14px; height: 14px; } }
+
+        @keyframes sparkle {
+            0%, 100% { filter: brightness(1); scale: 1; }
+            50% { filter: brightness(1.5); scale: 1.1; }
+        }
+
+        /* 3D Envelope with Wax Seal - Responsive */
+        .envelope-container {
+            width: 180px; height: 120px; position: relative; perspective: 1000px; cursor: pointer; margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .envelope-container { width: 220px; height: 150px; }
+        }
+        .envelope {
+            width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; transition: transform 0.6s;
+        }
+        .envelope-front {
+            width: 100%; height: 100%; background: #2e1065; position: absolute; z-index: 2;
+            border: 2px solid #ffd700; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        /* Wax Seal */
+        .wax-seal {
+            width: 35px; height: 35px; background: radial-gradient(circle, #ffd700, #b8860b);
+            border-radius: 50%; position: absolute; top: 60%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 4; box-shadow: 0 2px 5px rgba(0,0,0,0.5); border: 2px dashed #b8860b;
+            display: flex; align-items: center; justify-content: center; font-size: 18px; color: #5b21b6;
+        }
+        @media (min-width: 768px) { .wax-seal { width: 40px; height: 40px; top: 85px; font-size: 20px; } }
+
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 80px; 
+            background: #3b1675; clip-path: polygon(0 0, 50% 100%, 100% 0);
+            transform-origin: top; transition: transform 0.6s 0.2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 3; border-top: 2px solid #ffd700;
+        }
+        @media (min-width: 768px) { .envelope-flap { height: 100px; } }
+
+        .letter-card {
+            position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; background: #fffaf0; color: #2e1065;
+            z-index: 1; transition: transform 0.6s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform: translateY(0); display: flex; align-items: center; justify-content: center;
+            font-family: 'Great Vibes', cursive; font-size: 1.4rem; text-align: center; padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        @media (min-width: 768px) { .letter-card { font-size: 1.8rem; padding: 10px; } }
+
+        .envelope-container.open .envelope-flap { transform: rotateX(180deg); z-index: 0; }
+        .envelope-container.open .wax-seal { opacity: 0; transition: opacity 0.2s; }
+        .envelope-container.open .letter-card { transform: translateY(-80px); z-index: 5; }
+        @media (min-width: 768px) { .envelope-container.open .letter-card { transform: translateY(-100px); } }
+
+        /* Handwriting */
+        .handwriting-path {
+            fill: none; stroke: #ffd700; stroke-width: 1.5;
+            stroke-dasharray: 1000; stroke-dashoffset: 1000;
+        }
+
+        /* Loader */
+        .loader-wrap {
+            position: fixed; inset: 0; background: #05010a;
+            z-index: 1000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        
+        /* Click Pop */
+        .click-pop {
+            position: fixed; pointer-events: none; z-index: 9998;
+            animation: popUp 1.8s forwards ease-out; font-family: 'Great Vibes', cursive; color: #ffd700; 
+            text-shadow: 0 0 15px #ff69b4; font-size: 1.2rem;
+        }
+        @keyframes popUp {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2) rotate(0deg); }
+            100% { opacity: 0; transform: translate(-50%, -150px) scale(1); }
+        }
+        
+        /* Premium Button Style */
+        .btn-premium {
+            background-size: 200% auto;
+            transition: 0.5s;
+        }
+        .btn-premium:hover {
+            background-position: right center;
+        }
+    </style>
+</head>
+<body class="bg-magic-gradient selection:bg-magic-gold selection:text-black">
+
+    <!-- Film Grain Overlay -->
+    <div class="film-grain"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-ring" id="cursor-ring"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
+
+    <!-- Audio -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/10/25/audio_2491295963.mp3?filename=christmas-piano-123886.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-btn" class="fixed top-6 right-6 z-50 p-3 md:p-4 rounded-full border border-white/10 bg-black/30 backdrop-blur-md text-magic-gold hover:bg-magic-gold hover:text-black transition-all duration-500 hover:scale-110">
+        <i class="fas fa-music text-lg md:text-xl"></i>
+    </button>
+
+    <!-- Canvas for FX -->
+    <canvas id="fx-canvas" class="fixed inset-0 pointer-events-none z-10"></canvas>
+
+    <!-- PRELOADER -->
+    <div class="loader-wrap" id="preloader">
+        <div class="text-center relative z-20">
+            <h1 class="font-signature text-6xl md:text-9xl text-stardust leading-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+                <span class="inline-block animate-pulse">Magic</span> 
+                <span class="inline-block animate-pulse delay-100">Loading...</span> 
+            </h1>
+            <h2 class="font-cinema text-magic-gold text-sm md:text-2xl mt-4 md:mt-8 tracking-[0.5em] uppercase opacity-0" id="preloader-sub">A Surprise For You</h2>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <section class="relative min-h-dvh w-full overflow-hidden flex items-center justify-center" id="hero">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-20 scale-110 grayscale will-change-transform" id="hero-img"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-deep-night via-transparent to-deep-night"></div>
+        
+        <div class="relative z-20 text-center px-4 w-full max-w-5xl mx-auto">
+            <p class="font-cinema text-xs md:text-sm text-magic-gold tracking-[0.4em] md:tracking-[0.6em] uppercase mb-4 md:mb-8 opacity-0 translate-y-8 hero-elem">Under The Starlight</p>
+            <h1 class="font-signature text-7xl md:text-[11rem] text-transparent bg-clip-text bg-gradient-to-b from-white to-magic-gold leading-[1.1] mb-4 md:mb-8 opacity-0 translate-y-8 hero-elem drop-shadow-[0_0_40px_rgba(255,215,0,0.2)]">Our Love</h1>
+            <h2 class="font-elegant text-lg md:text-3xl text-gray-200 italic font-light opacity-0 translate-y-8 hero-elem max-w-3xl mx-auto leading-relaxed px-4">
+                "In a universe of infinite possibilities, finding you was my only destiny."
+            </h2>
+        </div>
+
+        <div class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-0 hero-elem animate-float">
+            <span class="text-white/40 text-[10px] tracking-[0.3em] uppercase mb-3">Begin</span>
+            <div class="w-[1px] h-12 md:h-16 bg-gradient-to-b from-magic-gold to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- NEW: HIDDEN WHISPERS (INTERACTIVE) -->
+    <section class="relative z-20 py-20 md:py-32 px-6 bg-deep-night overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="font-cinema text-3xl md:text-5xl text-magic-gold mb-4 drop-shadow-lg">Hidden Whispers</h2>
+            <p class="font-elegant text-gray-400 mb-16 md:mb-20 text-base md:text-lg">Find the glowing orbs to unlock my secrets...</p>
+            
+            <div class="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-32 min-h-[350px]">
+                <!-- Orb 1 -->
+                <div class="magic-orb animate-orb-float group" onclick="toggleOrb(this)">
+                    <div class="orb-content">
+                        <i class="fas fa-heart text-magic-gold text-2xl md:text-3xl mb-4"></i>
+                        <h3 class="font-signature text-2xl md:text-3xl text-stardust mb-2">My Favorite</h3>
+                        <p class="font-elegant text-gray-300 text-sm md:text-base leading-relaxed">Your happiness is my favorite sight in the entire world.</p>
+                    </div>
+                </div>
+                <!-- Orb 2 -->
+                <div class="magic-orb animate-orb-float delay-100 group" onclick="toggleOrb(this)">
+                    <div class="orb-content">
+                        <i class="fas fa-star text-magic-gold text-2xl md:text-3xl mb-4"></i>
+                        <h3 class="font-signature text-2xl md:text-3xl text-stardust mb-2">My Strength</h3>
+                        <p class="font-elegant text-gray-300 text-sm md:text-base leading-relaxed">When I am weak, I think of your smile, and I stand tall.</p>
+                    </div>
+                </div>
+                <!-- Orb 3 -->
+                <div class="magic-orb animate-orb-float delay-200 group" onclick="toggleOrb(this)">
+                    <div class="orb-content">
+                        <i class="fas fa-infinity text-magic-gold text-2xl md:text-3xl mb-4"></i>
+                        <h3 class="font-signature text-2xl md:text-3xl text-stardust mb-2">My Future</h3>
+                        <p class="font-elegant text-gray-300 text-sm md:text-base leading-relaxed">I cannot imagine a single tomorrow without you in it.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JOURNEY (PHOTOS) -->
+    <section class="relative z-20 py-20 md:py-32 px-6 bg-royal-purple/10">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="font-cinema text-3xl md:text-6xl text-center text-stardust mb-16 md:mb-28 opacity-0" id="story-title">Timeless Moments</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-12 perspective-1000">
+                <!-- PHOTO 1 -->
+                <div class="tilt-card opacity-0 translate-y-12 mx-auto max-w-sm w-full" id="card-1">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-8 border border-magic-gold/20 group shadow-[0_20px_50px_rgba(46,16,101,0.6)] transition-all duration-700 hover:shadow-[0_0_50px_rgba(255,215,0,0.2)] bg-black">
+                        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=2574&auto=format&fit=crop" class="w-full h-full object-contain transition-transform duration-[2s] group-hover:scale-110 opacity-90 group-hover:opacity-100">
+                        <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 bg-gradient-to-t from-black via-black/50 to-transparent">
+                            <h3 class="font-signature text-4xl md:text-5xl text-magic-gold mb-1 drop-shadow-md">Magic</h3>
+                        </div>
+                    </div>
+                </div>
+                <!-- PHOTO 2 -->
+                <div class="tilt-card opacity-0 translate-y-12 md:-mt-20 mx-auto max-w-sm w-full" id="card-2">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-8 border border-magic-gold/20 group shadow-[0_20px_50px_rgba(46,16,101,0.6)] transition-all duration-700 hover:shadow-[0_0_50px_rgba(255,215,0,0.2)] bg-black">
+                        <img src="https://images.unsplash.com/photo-1531747056595-07f6cbbe10ad?q=80&w=2670&auto=format&fit=crop" class="w-full h-full object-contain transition-transform duration-[2s] group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                        <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 bg-gradient-to-t from-black via-black/50 to-transparent">
+                            <h3 class="font-signature text-4xl md:text-5xl text-magic-gold mb-1 drop-shadow-md">Destiny</h3>
+                        </div>
+                    </div>
+                </div>
+                <!-- PHOTO 3 -->
+                <div class="tilt-card opacity-0 translate-y-12 mx-auto max-w-sm w-full" id="card-3">
+                    <div class="relative overflow-hidden rounded-xl aspect-[4/5] mb-8 border border-magic-gold/20 group shadow-[0_20px_50px_rgba(46,16,101,0.6)] transition-all duration-700 hover:shadow-[0_0_50px_rgba(255,215,0,0.2)] bg-black">
+                        <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=2669&auto=format&fit=crop" class="w-full h-full object-contain transition-transform duration-[2s] group-hover:scale-105 opacity-90 group-hover:opacity-100">
+                        <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 bg-gradient-to-t from-black via-black/50 to-transparent">
+                            <h3 class="font-signature text-4xl md:text-5xl text-magic-gold mb-1 drop-shadow-md">Eternity</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: SECRET ENVELOPE & PROPOSAL -->
+    <section class="relative min-h-dvh w-full flex flex-col items-center justify-center overflow-hidden bg-royal-purple" id="proposal-section">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#4c1d95_0%,#05010a_100%)] transition-colors duration-1000" id="proposal-bg"></div>
+        
+        <div class="relative z-30 w-full px-4 flex flex-col items-center justify-center min-h-[60vh]">
+            
+            <!-- STAGE 0: ENVELOPE SURPRISE -->
+            <div id="stage-envelope" class="flex flex-col items-center mb-16 transition-all duration-700 transform hover:scale-105 cursor-pointer">
+                <p class="font-cinema text-stardust/60 text-xs tracking-[0.3em] mb-8 md:mb-12 animate-pulse">A Secret Message</p>
+                <div class="envelope-container" onclick="openEnvelope(this)">
+                    <div class="envelope">
+                        <div class="envelope-front">
+                            <div class="wax-seal">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="envelope-flap"></div>
+                        <div class="letter-card">
+                            Open My Heart...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 1: RING BOX -->
+            <div id="stage-box" class="hidden flex flex-col items-center text-center opacity-0 transition-all duration-700">
+                <div id="silhouette-wrapper" class="hidden mb-12 opacity-0">
+                    <svg width="150" height="150" viewBox="0 0 200 200" class="fill-magic-gold drop-shadow-2xl">
+                        <path d="M85,50 C95,50 100,60 100,70 C100,80 95,85 90,85 L90,120 L70,160 L50,160 L70,120 L70,85 C65,85 60,80 60,70 C60,60 75,50 85,50 Z"></path>
+                        <path d="M120,120 L140,150 L120,170" stroke="white" stroke-width="2"></path>
+                    </svg>
+                </div>
+
+                <div class="box-container" id="ring-box">
+                    <div class="box-lid"></div>
+                    <div class="box-body">
+                         <div class="ring-wrapper">
+                            <div class="ring-band"></div>
+                            <div class="diamond"></div>
+                         </div>
+                    </div>
+                </div>
+                <p class="font-cinema text-stardust/70 text-xs mt-16 tracking-[0.4em] uppercase animate-pulse-glow">The Question</p>
+            </div>
+
+            <!-- STAGE 2: QUESTION -->
+            <div id="stage-question" class="hidden absolute inset-0 flex flex-col items-center justify-center w-full">
+                <div class="text-center mb-8 opacity-0 translate-y-4" id="boy-asks">
+                     <p class="font-cinema text-magic-gold text-sm tracking-[0.2em]">One Question...</p>
+                </div>
+
+                <div class="w-full max-w-4xl px-4 h-40 md:h-64 mb-10">
+                    <svg viewBox="0 0 800 200" class="w-full h-full overflow-visible">
+                        <text x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" font-family="'Alex Brush', cursive" font-size="60" fill="none" stroke="#ffd700" stroke-width="1.5" class="handwriting-path" id="sapana-text" style="filter: drop-shadow(0 0 10px rgba(255,215,0,0.3));">
+                            My Love...
+                        </text>
+                        <text x="50%" y="75%" dominant-baseline="middle" text-anchor="middle" font-family="'Alex Brush', cursive" font-size="70" fill="none" stroke="#fff" stroke-width="2" class="handwriting-path" id="marry-text" style="filter: drop-shadow(0 0 10px rgba(255,255,255,0.3)); stroke-dasharray: 1000; stroke-dashoffset: 1000;">
+                            Will You Marry Me?
+                        </text>
+                    </svg>
+                </div>
+                <div class="flex gap-4 md:gap-8 opacity-0 translate-y-8" id="answer-buttons">
+                    <button id="yes-btn" class="px-12 py-5 bg-gold-shimmer btn-premium text-deep-night font-cinema font-bold text-sm md:text-base uppercase tracking-widest rounded-sm shadow-[0_0_50px_rgba(255,215,0,0.4)] hover:scale-105 transition-transform duration-300">
+                        Yes! ❤️
+                    </button>
+                </div>
+            </div>
+
+            <!-- STAGE 3: YES -->
+            <div id="stage-yes" class="hidden absolute inset-0 flex flex-col items-center justify-center w-full z-50">
+                <div id="hearts-container" class="absolute inset-0 pointer-events-none overflow-hidden"></div>
+                <div class="relative z-10 text-center mix-blend-screen px-4">
+                    <h1 class="font-signature text-6xl md:text-[11rem] text-magic-gold leading-none mb-6 opacity-0 scale-50" id="yes-text">She Said Yes!</h1>
+                    <p class="font-elegant text-xl md:text-4xl text-gray-200 italic opacity-0 translate-y-4" id="yes-sub">My Forever.</p>
+                </div>
+                <button onclick="openLetter()" class="mt-16 opacity-0 translate-y-8 px-12 py-4 border border-magic-gold/40 text-magic-gold font-cinema text-xs tracking-[0.2em] uppercase hover:bg-magic-gold hover:text-black transition-all duration-500 rounded-full bg-black/40 backdrop-blur-md" id="vow-btn">
+                    Read Our Vows
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- LETTER MODAL -->
+    <div id="letter-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 opacity-0 pointer-events-none transition-opacity duration-700 px-4">
+        <div class="relative max-w-lg w-full p-10 md:p-16 bg-[#0f0518] border border-magic-gold/20 text-center transform scale-90 transition-transform duration-700 shadow-2xl rounded-sm" id="letter-content">
+            <button class="absolute top-6 right-6 text-white/30 hover:text-white transition-colors" onclick="closeLetter()"><i class="fas fa-times text-2xl"></i></button>
+            <i class="fas fa-quote-left text-3xl text-magic-gold mb-10"></i>
+            <h2 class="font-signature text-4xl md:text-6xl text-stardust mb-10">To My Love...</h2>
+            <div class="font-elegant text-lg md:text-2xl text-gray-300 leading-relaxed space-y-8">
+                <p>I promise to love you in every universe, in every timeline.</p>
+                <p>You are the magic I've been waiting for all my life.</p>
+                <p class="text-white font-bold text-2xl md:text-3xl mt-12 font-signature">I love you.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SMOOTH SCROLL (LENIS) SETUP ---
+        // Initialize Lenis for smooth momentum scrolling
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Exponential easing for buttery smooth feel
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        // Sync Lenis with GSAP ScrollTrigger
+        lenis.on('scroll', ScrollTrigger.update);
+
+        // Add Lenis update to GSAP ticker for synchronized animation loop
+        gsap.ticker.add((time) => {
+            lenis.raf(time * 1000);
+        });
+
+        // Disable GSAP lag smoothing to ensure sync with Lenis
+        gsap.ticker.lagSmoothing(0);
+
+        // --- CLICK MAGIC SURPRISE ---
+        const phrases = ["I Love You", "Te Amo", "Je t'aime", "Forever", "My Soulmate"];
+        document.addEventListener('click', (e) => {
+            if(e.target.closest('button') || e.target.closest('.magic-orb') || e.target.closest('.envelope-container') || e.target.closest('.box-container')) return;
+
+            const pop = document.createElement('div');
+            pop.classList.add('click-pop');
+            pop.style.left = e.clientX + 'px';
+            pop.style.top = e.clientY + 'px';
+            pop.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+            document.body.appendChild(pop);
+            
+            for(let i=0; i<8; i++) {
+                const star = document.createElement('div');
+                star.innerHTML = '✨';
+                star.style.position = 'fixed';
+                star.style.left = e.clientX + (Math.random() * 80 - 40) + 'px';
+                star.style.top = e.clientY + (Math.random() * 80 - 40) + 'px';
+                star.style.fontSize = Math.random() * 10 + 10 + 'px';
+                star.style.pointerEvents = 'none';
+                star.animate([
+                    { opacity: 1, transform: 'scale(0) rotate(0deg)' },
+                    { opacity: 0, transform: 'scale(1.5) rotate(180deg)' }
+                ], { duration: 1200 });
+                document.body.appendChild(star);
+                setTimeout(() => star.remove(), 1200);
+            }
+            setTimeout(() => pop.remove(), 1800);
+        });
+
+        // --- ORB LOGIC ---
+        function toggleOrb(el) {
+            document.querySelectorAll('.magic-orb').forEach(orb => {
+                if(orb !== el) orb.classList.remove('active');
+            });
+            el.classList.toggle('active');
+        }
+
+        // --- ENVELOPE LOGIC ---
+        function openEnvelope(el) {
+            el.classList.add('open');
+            setTimeout(() => {
+                gsap.to('#stage-envelope', { opacity: 0, scale: 0.8, duration: 0.5, onComplete: () => {
+                    document.getElementById('stage-envelope').classList.add('hidden');
+                    const box = document.getElementById('stage-box');
+                    box.classList.remove('hidden');
+                    gsap.to(box, { opacity: 1, duration: 1 });
+                }});
+            }, 1200);
+        }
+
+        // --- 3D TILT ---
+        const cards = document.querySelectorAll('.tilt-card');
+        const handleTilt = (e, card) => {
+            const rect = card.getBoundingClientRect();
+            // Handle both mouse and touch events
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            
+            const x = clientX - rect.left - rect.width/2;
+            const y = clientY - rect.top - rect.height/2;
+            card.style.transform = `perspective(1000px) rotateX(${y * -0.05}deg) rotateY(${x * 0.05}deg)`;
+        };
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => handleTilt(e, card));
+            card.addEventListener('touchmove', (e) => handleTilt(e, card)); // Mobile touch support
+            card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)');
+            card.addEventListener('touchend', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)');
+        });
+
+        // --- LOADER ---
+        window.addEventListener('load', () => {
+            setTimeout(() => gsap.to("#preloader-sub", { opacity: 1, duration: 2, letterSpacing: "0.5em" }), 500);
+            setTimeout(() => gsap.to('#preloader', { opacity: 0, duration: 1.5, onComplete: () => {
+                document.getElementById('preloader').style.display = 'none';
+                playHero();
+            }}), 3500);
+        });
+
+        // --- GSAP HERO ---
+        gsap.registerPlugin(ScrollTrigger);
+        function playHero() {
+            const tl = gsap.timeline();
+            tl.to("#hero-img", { scale: 1, duration: 12, ease: "power1.inOut" })
+              .to(".hero-elem", { opacity: 1, y: 0, duration: 1.8, stagger: 0.3, ease: "power3.out" }, "-=11");
+        }
+
+        // Smoother ScrollTrigger animations
+        const scrollCards = ["#card-1", "#card-2", "#card-3"];
+        scrollCards.forEach((id, i) => {
+            gsap.to(id, { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1.5, // Increased duration for smoothness
+                ease: "power2.out", // Softer easing
+                scrollTrigger: { trigger: "#story-title", start: "top 60%", delay: i*0.2 }
+            });
+        });
+        gsap.to("#story-title", { opacity: 1, duration: 1.8, ease: "power2.out", scrollTrigger: { trigger: "#story-title", start: "top 80%" }});
+
+        // --- PROPOSAL LOGIC ---
+        const ringBox = document.getElementById('ring-box');
+        const stageBox = document.getElementById('stage-box');
+        const stageQuestion = document.getElementById('stage-question');
+        const stageYes = document.getElementById('stage-yes');
+        const yesBtn = document.getElementById('yes-btn');
+
+        ringBox.addEventListener('click', () => {
+            ringBox.classList.add('open');
+            document.getElementById('silhouette-wrapper').classList.remove('hidden');
+            gsap.to('#silhouette-wrapper', { opacity: 1, duration: 1, y: -10 });
+            setTimeout(() => {
+                gsap.to(stageBox, { opacity: 0, y: -20, duration: 0.8, onComplete: () => {
+                    stageBox.classList.add('hidden');
+                    stageQuestion.classList.remove('hidden');
+                    gsap.to("#boy-asks", { opacity: 1, y: 0, duration: 1 });
+                    gsap.to("#sapana-text", { strokeDashoffset: 0, duration: 2, ease: "power1.inOut", delay: 0.5 });
+                    gsap.to("#marry-text", { strokeDashoffset: 0, duration: 3, ease: "power1.inOut", delay: 2 });
+                    gsap.to("#answer-buttons", { opacity: 1, y: 0, delay: 5, duration: 1 });
+                }});
+            }, 1500);
+        });
+
+        yesBtn.addEventListener('click', () => {
+            gsap.to(stageQuestion, { opacity: 0, scale: 0.95, duration: 0.5, onComplete: () => {
+                stageQuestion.classList.add('hidden');
+                stageYes.classList.remove('hidden');
+                gsap.to("#yes-text", { opacity: 1, scale: 1, duration: 2.5, ease: "power4.out" });
+                gsap.to("#yes-sub", { opacity: 1, y: 0, delay: 1, duration: 1.5 });
+                gsap.to("#vow-btn", { opacity: 1, y: 0, delay: 2.5, duration: 1 });
+                changeToCelebrationMode();
+            }});
+        });
+
+        // --- FX SYSTEM ---
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [], mode = 'stars';
+
+        function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function initParticles() { 
+            // Optimize count for mobile
+            const count = window.innerWidth < 768 ? 40 : 80;
+            particles = []; 
+            for(let i=0; i<count; i++) particles.push(createParticle()); 
+        }
+        function createParticle() {
+            return {
+                x: Math.random() * width, y: Math.random() * height,
+                size: Math.random() * (mode === 'stars' ? 1.5 : 5) + 0.5,
+                speedY: Math.random() * 0.5 + 0.1,
+                color: mode === 'stars' ? `rgba(255,255,255,${Math.random()})` : `hsl(${Math.random()*360}, 100%, 50%)`
+            };
+        }
+        initParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.y -= p.speedY; // Float up
+                if(p.y < 0) { p.y = height; p.x = Math.random() * width; }
+                ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        function changeToCelebrationMode() {
+            mode = 'confetti';
+            const count = window.innerWidth < 768 ? 60 : 120;
+            for(let i=0; i<count; i++) particles.push(createParticle());
+            const audio = document.getElementById('bg-music'); if(audio) audio.volume = 1.0;
+        }
+
+        // --- UTILS ---
+        window.openLetter = () => {
+            document.getElementById('letter-modal').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('letter-content').classList.remove('scale-90');
+            document.getElementById('letter-content').classList.add('scale-100');
+        }
+        window.closeLetter = () => {
+            document.getElementById('letter-modal').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('letter-content').classList.remove('scale-100');
+            document.getElementById('letter-content').classList.add('scale-90');
+        }
+
+        // Cursor & Audio
+        const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0 });
+            gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.15 });
+        });
+        document.body.addEventListener('click', () => {
+            const a = document.getElementById('bg-music');
+            if(a.paused) { a.volume = 0.5; a.play(); document.getElementById('music-btn').innerHTML = '<i class="fas fa-volume-up text-xl"></i>'; }
+        }, { once: true });
+    </script>
+</body>
+</html>
